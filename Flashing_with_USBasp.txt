@@ -1,0 +1,82 @@
+Place copy of the following files in a folder accessible by MSYS2 MinGW 64-bit (for Windows)
+--------------------------------------------------------------------------------------------
+
+1) avrdude.conf
+2) arrdude.exe
+3) current firmware hex for USBasp (usbasp.atmega8.2011-05-28.hex) (found here: https://www.fischl.de/usbasp/)
+4) production .hex created following the steps in the QMK docs (here https://beta.docs.qmk.fm/using-qmk/guides/keyboard-building/isp_flashing_guide)
+
+To update the USBasp's firmware, flash the uno with the AVR as ISP sketch from IDE and wire it up to the USBasp like this:
+------------------------------------------------------------------------------------------------------------------------
+
+Uno   |   USBasp
+------+-------
+13    |  SCK
+12    |  MISO
+11    |  MOSI
+10    |  Reset
+GND   |  GND
+5V    |  VCC
+
+With a 10UF capacitor between GND and Reset on the Uno
+
+Use jumper wire to connect "JP2" on USBasp otherwise, it will not flash
+
+
+    References:
+    https://www.arduino.cc/en/Tutorial/BuiltInExamples/ArduinoISP
+    https://www.instructables.com/How-to-Update-the-Firmware-on-a-Cheap-USBasp-Clone/
+    https://schou.dk/linux/arduino/isp/ 
+    https://www.youtube.com/watch?v=1tU7cAFwzig
+
+
+Flash USBasp (using MSYS2) in folder with the copied files
+------------------------------------------------------
+Example  $./avrdude -C ./avrdude.conf -p m8 -c stk500v1 -P COM5 -b 19200 -U flash:w:usbasp.atmega8.2011-05-28.hex:i 
+
+Once complete, wire USBasp to pro micro like this:
+------------------------------------------------
+
+USBasp |   Pro Micro
+------+-------
+SCK    |  15 (B1)
+MISO   |  14 (B3)
+MOSI   |  16 (B2)
+Reset  |  Reset
+GND    |  GND
+VCC    |  VCC
+
+    References:
+    https://github.com/Klackygears/isp_flashing
+    https://beta.docs.qmk.fm/using-qmk/guides/keyboard-building/isp_flashing_guide
+    https://www.nongnu.org/avrdude/user-manual/avrdude_4.html#Option-Descriptions
+
+
+Flash Pro Micro (using MSYS2) in folder with the copied files
+------------------------------------------------------
+Example  $avrdude -c usbasp-clone -p m32u4 -P COM5 -b 19200 -U flash:w:"eek_silk_down_default_production.hex":a -U lfuse:w:0x5E:m -U hfuse:w:0xD9:m -U efuse:w:0xC3:m -U lock:w:0x3F:m
+
+Command Options for avrdude:
+https://www.nongnu.org/avrdude/user-manual/avrdude_4.html#Option-Descriptions
+
+    Note:
+    -P option, that's your port, which you'll need to find on your PC
+    -c option, that's your programmer
+
+Examples that I used:
+---------------------
+
+Command to flash USBasp with arduino Uno
+
+./avrdude -C ./avrdude.conf -p m8 -c stk500v1 -P COM5 -b 19200 -U flash:w:usbasp.atmega8.2011-05-28.hex:i 
+
+
+Command to flash pro micro with arduino Uno
+
+avrdude -c stk500v1 -p m32u4 -P COM5 -b 19200 
+-U flash:w:"eek_silk_down_default_production.hex":a -U lfuse:w:0x5E:m -U hfuse:w:0xD9:m -U efuse:w:0xC3:m -U lock:w:0x3F:m
+
+
+Command to flash pro micro with updated USBasp
+
+avrdude -c usbasp-clone -p m32u4 -P COM5 -b 19200 -U flash:w:"eek_silk_down_default_production.hex":a -U lfuse:w:0x5E:m -U hfuse:w:0xD9:m -U efuse:w:0xC3:m -U lock:w:0x3F:m
