@@ -1,7 +1,5 @@
-`#<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>#`
 `Flash dfu bootloader on pro micro with arduino uno using adruino as ISP.`
 
-`#<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>#`
 
 
 #I am NOT an expert at this. I don't know much more than what I have here.#
@@ -12,14 +10,12 @@
 I progressed through the following steps and used information from the following sources cited to help with this.
 
 
-`#<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>#`
 `#1) Use Arduino IDE to load "Arduino as ISP" sketch to Uno.`
 
 File> Examples> ArduinoISP >ArduinoISP
 Upload the Sketch and the Uno should be ready.
 
 
-`#<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>#`
 `#2) Wiring Uno to Pro Micro (Leonardo clone)`
 
 https://schou.dk/linux/arduino/isp/
@@ -35,7 +31,6 @@ https://schou.dk/linux/arduino/isp/
 `You can also use this guide to reflash the Caterina bootloader if you mess up. (I certainly did!)`
 
 
-`#<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>#`
 `#3) Add capacitor to Uno between reset and ground`
 
 https://forum.arduino.cc/index.php?topic=431723.0
@@ -43,7 +38,6 @@ https://forum.arduino.cc/index.php?topic=431723.0
 I used a 0.1uF because it's what I had on hand and it worked fine.
 
 
-`#<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>#`
 `#4) Creating the hex for flashing the dfu bootloader and keymap at the same time`
 
 https://www.reddit.com/r/olkb/comments/8sxgzb/replace_pro_micro_bootloader_with_qmk_dfu/
@@ -66,7 +60,6 @@ https://www.reddit.com/r/olkb/comments/8sxgzb/replace_pro_micro_bootloader_with_
 Thanks drashna For this helpful guide! `Read through this carefully, it's helpful on the next steps also.`
 
 
-`#<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>#`
 `#5) Writing terminal command and setting options correctly for avrdude (-c -p -P -b -U)`
 
 https://www.nongnu.org/avrdude/user-manual/avrdude_4.html#Option-Descriptions
@@ -79,7 +72,6 @@ Thanks GAMELASTER!
 My command is below step 6 and includes the EEPROM option drashna's guide used.
 
 
-`#<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>#`
 `#6) General info and flashing EEPROM`
 
 https://github.com/qmk/qmk_firmware/blob/master/keyboards/lets_split/readme.md
@@ -90,12 +82,10 @@ ISP Flashing Guide
 
 
 
-#<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>#
 `#Command I used in Terminal (Mac OS) from qmk_firmware directory (cd qmk_firmware)`
 
 avrdude -c stk500v1 -p m32u4 -P /dev/cu.usbmodem14201 -b 19200 -U flash:w:"helix_rev2_klackygears_production.hex":a -U lfuse:w:0x5E:m -U hfuse:w:0xD9:m -U efuse:w:0xC3:m -U lock:w:0x3F:m -U eeprom:w:"eeprom-righthand.eep":a
 
-#<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>#
 `#Command for non split example`
 avrdude -c stk500v1 -p m32u4 -P /dev/cu.usbmodem14201 -b 19200 -U flash:w:"eek_silk_down_default_production.hex":a -U lfuse:w:0x5E:m -U hfuse:w:0xD9:m -U efuse:w:0xC3:m -U lock:w:0x3F:m
 
